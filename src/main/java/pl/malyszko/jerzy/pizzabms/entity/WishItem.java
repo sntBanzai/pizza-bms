@@ -22,12 +22,10 @@ public class WishItem extends AbstractEntity {
 
 	}
 
-	@ManyToOne
-	@Column(nullable = false)
+	@ManyToOne(optional = false)
 	private WishType wishType;
 
-	@ManyToOne
-	@Column(nullable = false)
+	@ManyToOne(optional = false)
 	private Wish wish;
 
 	public WishType getWishType() {

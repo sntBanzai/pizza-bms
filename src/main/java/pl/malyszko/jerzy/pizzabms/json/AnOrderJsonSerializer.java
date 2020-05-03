@@ -3,6 +3,7 @@ package pl.malyszko.jerzy.pizzabms.json;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -31,18 +32,18 @@ public class AnOrderJsonSerializer extends JsonSerializer<AnOrder> {
 		writeItDown(collect, Boolean.TRUE, gen);
 
 		gen.writeEndArray();
-		gen.writeStartObject();
+		gen.writeEndObject();
 	}
 
 	private void writeItDown(Map<Boolean, List<Pizza>> partitioned,
 			Boolean completedMark, JsonGenerator gen) throws IOException {
 		List<Pizza> list = partitioned.get(completedMark);
 		if (!list.isEmpty()) {
+			gen.writeStartObject();
+			gen.writeArrayFieldStart("pizzas");
 			for (Pizza pizza : list) {
-				gen.writeStartObject();
-				gen.writeArrayFieldStart("pizzas");
 				Map<String, Map<String, Long>> collect = pizza.getItems()
-						.stream()
+						.stream().filter(Objects::nonNull)
 						.collect(Collectors.groupingBy(
 								wi -> wi.getWishType().getName(),
 								Collectors.groupingBy(
@@ -63,10 +64,10 @@ public class AnOrderJsonSerializer extends JsonSerializer<AnOrder> {
 					gen.writeEndArray();
 					gen.writeEndObject();
 				}
-				gen.writeEndArray();
-				gen.writeBooleanField("completed", completedMark);
-				gen.writeEndObject();
 			}
+			gen.writeEndArray();
+			gen.writeBooleanField("completed", completedMark);
+			gen.writeEndObject();
 		}
 	}
 

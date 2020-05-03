@@ -5,17 +5,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 
+import pl.malyszko.jerzy.pizzabms.entity.AnOrder;
+import pl.malyszko.jerzy.pizzabms.entity.Pizza;
 import pl.malyszko.jerzy.pizzabms.entity.Wish;
 import pl.malyszko.jerzy.pizzabms.entity.WishItem;
 import pl.malyszko.jerzy.pizzabms.entity.WishType;
@@ -26,7 +34,7 @@ import pl.malyszko.jerzy.pizzabms.entity.WishType;
  */
 public class JsonTests {
 
-	String wishJson = "{\"eater\": \"Olo-ziom\",\"wishes\": [{\"pizza\": \"carbonara\",  \"pieces\": 4},"
+	static String wishJson = "{\"eater\": \"Olo-ziom\",\"wishes\": [{\"pizza\": \"carbonara\",  \"pieces\": 4},"
 			+ "{\"pizza\": \"vegetarian\",\"pieces\": 2}]}";
 
 	String orderJson = "{\"order-lines\":[{\"pizzas\":[{"
@@ -105,13 +113,62 @@ public class JsonTests {
 	}
 
 	@Test
-	public void shouldSerializeAnOrder() {
-		//given
-		
-		//when
-		
-		//then
+	public void shouldSerializeAnOrder() throws IOException {
+		// given
+		AnOrder order = new AnOrder();
+		Pizza firstPizza = new Pizza(order);
+		Pizza secondPizza = new Pizza(order);
+		Pizza thirdPizza = new Pizza(order);
+		Wish oloWish = new Wish();
+		oloWish.setNick("Olo-ziom");
+		Wish kaktusWish = new Wish();
+		kaktusWish.setNick("kaktus");
+		Wish coderWish = new Wish();
+		coderWish.setNick("coder");
+		WishType carbonaraType = new WishType("carbonara");
+		WishType vegetarianType = new WishType("vegetarian");
+		IntStream.range(0, 4)
+				.mapToObj(i -> new WishItem(oloWish, carbonaraType))
+				.forEach(firstPizza::addNextItem);
+		IntStream.range(0, 2)
+				.mapToObj(i -> new WishItem(coderWish, carbonaraType))
+				.forEach(secondPizza::addNextItem);
+		secondPizza.addNextItem(new WishItem(kaktusWish, carbonaraType));
 
+		IntStream.range(0, 5)
+				.mapToObj(i -> new WishItem(oloWish, vegetarianType))
+				.forEach(thirdPizza::addNextItem);
+		IntStream.range(0, 3)
+				.mapToObj(i -> new WishItem(coderWish, vegetarianType))
+				.forEach(thirdPizza::addNextItem);
+
+		// when
+		ObjectMapper om = new ObjectMapper();
+		String jsonSerialized = om.writerWithDefaultPrettyPrinter()
+				.writeValueAsString(order);
+
+		// then
+		// System.out.println(jsonSerialized);
+		JsonParser parser = new JsonFactory().createParser(jsonSerialized);
+		JsonNode node = new ObjectMapper().readTree(parser);
+		JsonNode jsonNode = node.get("order-lines");
+		assertNotNull(jsonNode);
+		assertEquals(JsonNodeType.ARRAY, jsonNode.getNodeType());
+
+		for(int i = 0; i<2; i++) {
+			JsonNode jsonNode2 = jsonNode.get(0);
+			assertNotNull(jsonNode2);
+			assertEquals(JsonNodeType.OBJECT, jsonNode2.getNodeType());
+			JsonNode jsonNode3 = jsonNode2.get("pizzas");
+			assertNotNull(jsonNode3);
+			assertEquals(JsonNodeType.ARRAY, jsonNode3.getNodeType());
+		}
+		
+
+	}
+	
+	public static void main(String...strings) {
+		System.out.println(wishJson);
 	}
 
 }

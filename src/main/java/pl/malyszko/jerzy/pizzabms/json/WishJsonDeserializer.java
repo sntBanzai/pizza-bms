@@ -24,7 +24,7 @@ public class WishJsonDeserializer extends JsonDeserializer<Wish> {
 			throws IOException, JsonProcessingException {
 		ObjectCodec oc = p.getCodec();
 		JsonNode node = oc.readTree(p);
-
+		p.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		String eater = node.get("eater").asText();
 		Wish retVal = new Wish();
 		retVal.setNick(eater);

@@ -1,5 +1,6 @@
 package pl.malyszko.jerzy.pizzabms.entity;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -18,14 +19,13 @@ public class Pizza extends AbstractEntity {
 
 	public Pizza(AnOrder order) {
 		this.order = order;
+		this.order.getOrderCompletions().add(this);
 	}
 
-	@Column(nullable = false)
-	@ManyToOne
+	@ManyToOne(optional = false)
 	private AnOrder order;
 
-	@Column(nullable = false)
-	@OneToOne
+	@OneToOne(optional = false)
 	private WishItem itemOne;
 
 	@OneToOne
@@ -129,5 +129,25 @@ public class Pizza extends AbstractEntity {
 
 	public Boolean isCompleted() {
 		return getItems().stream().noneMatch(Objects::isNull);
+	}
+
+	public boolean addNextItem(WishItem wi) {
+		Field[] declaredFields = this.getClass().getDeclaredFields();
+		for (Field field : declaredFields) {
+			if (Objects.equals(field.getType(), WishItem.class)) {
+				field.setAccessible(true);
+				try {
+					Object object = field.get(this);
+					if (object == null) {
+						field.set(this, wi);
+						return true;
+
+					}
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return false;
 	}
 }

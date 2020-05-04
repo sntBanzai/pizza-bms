@@ -10,51 +10,44 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-import pl.malyszko.jerzy.pizzabms.entity.AnOrder;
+import pl.malyszko.jerzy.pizzabms.dto.OrderDTO;
 import pl.malyszko.jerzy.pizzabms.entity.Pizza;
 
 /**
  * @author Jerzy Mayszko
  *
  */
-public class AnOrderJsonSerializer extends JsonSerializer<AnOrder> {
+public class OrdeDTOrJsonSerializer extends JsonSerializer<OrderDTO> {
 
 	@Override
-	public void serialize(AnOrder value, JsonGenerator gen,
+	public void serialize(OrderDTO value, JsonGenerator gen,
 			SerializerProvider serializers) throws IOException {
 		gen.writeStartObject();
 		gen.writeArrayFieldStart("order-lines");
 
-		Map<Boolean, List<Pizza>> collect = value.getOrderCompletions().stream()
-				.collect(Collectors.partitioningBy(Pizza::isCompleted));
+//		Map<Boolean, List<Pizza>> collect = value.getOrderCompletions().stream()
+//				.collect(Collectors.partitioningBy(Pizza::isCompleted));
 
-		writeItDown(collect, Boolean.FALSE, gen);
-		writeItDown(collect, Boolean.TRUE, gen);
+		writeItDown(value.getNotCompleted(), Boolean.FALSE, gen);
+		writeItDown(value.getCompleted(), Boolean.TRUE, gen);
 
 		gen.writeEndArray();
 		gen.writeEndObject();
 	}
 
-	private void writeItDown(Map<Boolean, List<Pizza>> partitioned,
+	private void writeItDown(
+			List<Map<String, Map<String, Integer>>> partitioned,
 			Boolean completedMark, JsonGenerator gen) throws IOException {
-		List<Pizza> list = partitioned.get(completedMark);
-		if (!list.isEmpty()) {
+		if (!partitioned.isEmpty()) {
 			gen.writeStartObject();
 			gen.writeArrayFieldStart("pizzas");
-			for (Pizza pizza : list) {
-				Map<String, Map<String, Long>> collect = pizza.getItems()
-						.stream().filter(Objects::nonNull)
-						.collect(Collectors.groupingBy(
-								wi -> wi.getWishType().getName(),
-								Collectors.groupingBy(
-										wi -> wi.getWish().getNick(),
-										Collectors.counting())));
-				for (Map.Entry<String, Map<String, Long>> ent : collect
+			for (Map<String, Map<String, Integer>> pizza : partitioned) {
+				for (Map.Entry<String, Map<String, Integer>> ent : pizza
 						.entrySet()) {
 					gen.writeStartObject();
 					gen.writeStringField("pizza", ent.getKey());
 					gen.writeArrayFieldStart("details");
-					for (Map.Entry<String, Long> ent2 : ent.getValue()
+					for (Map.Entry<String, Integer> ent2 : ent.getValue()
 							.entrySet()) {
 						gen.writeStartObject();
 						gen.writeStringField("eater", ent2.getKey());

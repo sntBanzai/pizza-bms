@@ -13,33 +13,28 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import pl.malyszko.jerzy.pizzabms.dto.WishDTO;
 import pl.malyszko.jerzy.pizzabms.entity.Wish;
 import pl.malyszko.jerzy.pizzabms.entity.WishItem;
 import pl.malyszko.jerzy.pizzabms.entity.WishType;
 
-public class WishJsonDeserializer extends JsonDeserializer<Wish> {
+public class WishDTOJsonDeserializer extends JsonDeserializer<WishDTO> {
 
 	@Override
-	public Wish deserialize(JsonParser p, DeserializationContext ctxt)
+	public WishDTO deserialize(JsonParser p, DeserializationContext ctxt)
 			throws IOException, JsonProcessingException {
 		ObjectCodec oc = p.getCodec();
 		JsonNode node = oc.readTree(p);
 		p.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		String eater = node.get("eater").asText();
-		Wish retVal = new Wish();
+		WishDTO retVal = new WishDTO();
 		retVal.setNick(eater);
-		Map<String, Integer> pizzaPieces = new HashMap<>();
+		Map<String, Integer> pizzaPieces = retVal.getPizzaPieces();
 		Consumer<JsonNode> nodeConsumer = jn -> {
 			pizzaPieces.put(jn.get("pizza").asText(), jn.get("pieces").asInt());
 		};
 		JsonNode wishesNode = node.get("wishes");
 		wishesNode.forEach(nodeConsumer);
-		for (Map.Entry<String, Integer> ent : pizzaPieces.entrySet()) {
-			WishType wt = new WishType();
-			wt.setName(ent.getKey());
-			IntStream.range(0, ent.getValue())
-					.forEach(i -> new WishItem(retVal, wt));
-		}
 		return retVal;
 	}
 

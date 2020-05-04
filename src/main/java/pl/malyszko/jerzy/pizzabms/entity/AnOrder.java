@@ -8,14 +8,13 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import pl.malyszko.jerzy.pizzabms.json.AnOrderJsonSerializer;
+import pl.malyszko.jerzy.pizzabms.json.OrdeDTOrJsonSerializer;
 
 /**
  * @author Jerzy Mayszko
  *
  */
 @Entity
-@JsonSerialize(using = AnOrderJsonSerializer.class)
 public class AnOrder extends AbstractEntity {
 
 	@OneToMany

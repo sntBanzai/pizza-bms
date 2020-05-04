@@ -11,16 +11,14 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import pl.malyszko.jerzy.pizzabms.json.WishJsonDeserializer;
-import pl.malyszko.jerzy.pizzabms.json.WishJsonSerializer;
+import pl.malyszko.jerzy.pizzabms.json.WishDTOJsonDeserializer;
+import pl.malyszko.jerzy.pizzabms.json.WishDTOJsonSerializer;
 
 /**
  * @author Jerzy Mayszko
  *
  */
 @Entity
-@JsonSerialize(using = WishJsonSerializer.class)
-@JsonDeserialize(using = WishJsonDeserializer.class)
 public class Wish extends AbstractEntity {
 
 	@Column(nullable = false)

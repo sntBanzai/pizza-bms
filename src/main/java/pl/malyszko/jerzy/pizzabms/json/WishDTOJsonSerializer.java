@@ -8,22 +8,21 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
+import pl.malyszko.jerzy.pizzabms.dto.WishDTO;
 import pl.malyszko.jerzy.pizzabms.entity.Wish;
-import pl.malyszko.jerzy.pizzabms.entity.WishItem;
 
-public class WishJsonSerializer extends JsonSerializer<Wish> {
+public class WishDTOJsonSerializer extends JsonSerializer<WishDTO> {
 
 	@Override
-	public void serialize(Wish value, JsonGenerator gen,
+	public void serialize(WishDTO value, JsonGenerator gen,
 			SerializerProvider serializers) throws IOException {
 		gen.writeStartObject();
 		gen.writeStringField("eater", value.getNick());
 
 		gen.writeArrayFieldStart("wishes");
-		Map<String, Long> collect = value.getWishItems().stream()
-				.collect(Collectors.groupingBy(wi -> wi.getWishType().getName(),
-						Collectors.counting()));
-		for (Map.Entry<String, Long> wi : collect.entrySet()) {
+
+		for (Map.Entry<String, Integer> wi : value.getPizzaPieces()
+				.entrySet()) {
 			gen.writeStartObject();
 			gen.writeStringField("pizza", wi.getKey());
 			gen.writeNumberField("pieces", wi.getValue());

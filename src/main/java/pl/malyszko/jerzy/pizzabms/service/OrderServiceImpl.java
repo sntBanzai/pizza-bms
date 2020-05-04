@@ -12,12 +12,18 @@ import pl.malyszko.jerzy.pizzabms.entity.Wish;
  *
  */
 @Service
-public class OrderServiceImpl implements OrderService{
+public class OrderServiceImpl implements OrderService {
 
 	@Async
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void makeAnOrder(Wish wish) {
-
+//		Map<String, Map<String, Long>> collect = pizza.getItems()
+//		.stream().filter(Objects::nonNull)
+//		.collect(Collectors.groupingBy(
+//				wi -> wi.getWishType().getName(),
+//				Collectors.groupingBy(
+//						wi -> wi.getWish().getNick(),
+//
 	}
 
 }

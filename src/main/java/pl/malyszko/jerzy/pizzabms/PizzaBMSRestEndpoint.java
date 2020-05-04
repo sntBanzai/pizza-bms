@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import pl.malyszko.jerzy.pizzabms.dto.WishDTO;
 import pl.malyszko.jerzy.pizzabms.entity.Wish;
 import pl.malyszko.jerzy.pizzabms.service.OrderService;
 import pl.malyszko.jerzy.pizzabms.service.WishService;
@@ -26,10 +27,10 @@ public class PizzaBMSRestEndpoint {
 	}
 
 	@PostMapping(path = "doWish")
-	public ResponseEntity<Wish> newWish(@RequestBody Wish aWish) {
-		wishService.makeAWish(aWish);
-		orderService.makeAnOrder(aWish);
-		return  ResponseEntity.ok(aWish);
+	public ResponseEntity<WishDTO> newWish(@RequestBody WishDTO aWish) {
+		Wish wish = wishService.makeAWish(aWish);
+		orderService.makeAnOrder(wish);
+		return ResponseEntity.ok(aWish);
 	}
 
 }

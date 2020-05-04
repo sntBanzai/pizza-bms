@@ -1,5 +1,6 @@
 package pl.malyszko.jerzy.pizzabms.service;
 
+import pl.malyszko.jerzy.pizzabms.dto.WishDTO;
 import pl.malyszko.jerzy.pizzabms.entity.Wish;
 
 /**
@@ -8,6 +9,6 @@ import pl.malyszko.jerzy.pizzabms.entity.Wish;
  */
 public interface WishService {
 
-	void makeAWish(Wish aWish);
+	Wish makeAWish(WishDTO aWish);
 	
 }

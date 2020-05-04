@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -26,6 +27,9 @@ public class Wish extends AbstractEntity {
 
 	@OneToMany
 	private List<WishItem> wishes = new ArrayList<>();
+	
+	@ManyToOne(optional = false)
+	private AnOrder order;
 
 	public String getNick() {
 		return nick;
@@ -48,4 +52,14 @@ public class Wish extends AbstractEntity {
 	public List<WishItem> getWishItems() {
 		return wishes;
 	}
+
+	public AnOrder getOrder() {
+		return order;
+	}
+
+	public void setOrder(AnOrder order) {
+		this.order = order;
+	}
+	
+	
 }

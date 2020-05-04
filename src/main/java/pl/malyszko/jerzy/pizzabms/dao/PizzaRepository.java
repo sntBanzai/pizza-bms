@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import pl.malyszko.jerzy.pizzabms.entity.Pizza;
 
 @Repository
-public interface OrderCompletionRepository
+public interface PizzaRepository
 		extends CrudRepository<Pizza, Long> {
 
 }

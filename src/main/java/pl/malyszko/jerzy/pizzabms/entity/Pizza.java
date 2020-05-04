@@ -1,17 +1,18 @@
 package pl.malyszko.jerzy.pizzabms.entity;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Pizza extends AbstractEntity {
+public class Pizza extends AbstractEntity implements Iterable<WishItem> {
 
 	public Pizza() {
 
@@ -25,7 +26,7 @@ public class Pizza extends AbstractEntity {
 	@ManyToOne(optional = false)
 	private AnOrder order;
 
-	@OneToOne(optional = false)
+	@OneToOne
 	private WishItem itemOne;
 
 	@OneToOne
@@ -147,6 +148,43 @@ public class Pizza extends AbstractEntity {
 					throw new RuntimeException(e);
 				}
 			}
+		}
+		return false;
+	}
+
+	public void removeItem(WishItem wishItem) {
+		Field[] declaredFields = this.getClass().getDeclaredFields();
+		for (Field field : declaredFields) {
+			if (Objects.equals(field.getType(), WishItem.class)) {
+				field.setAccessible(true);
+				try {
+					Object object = field.get(this);
+					if (Objects.equals(wishItem, object)) {
+						field.set(this, null);
+						return;
+
+					}
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Iterator<WishItem> iterator() {
+		return new ArrayList(Arrays.asList(getItemOne(), getItemTwo(),
+				getItemThree(), getItemFour(), getItemFive(), getItemSix(),
+				getItemSeven(), getItemEight())).listIterator();
+	}
+
+	public boolean hasAnyItem() {
+		Iterator<WishItem> iterator = iterator();
+		while (iterator.hasNext()) {
+			if (Objects.nonNull(iterator.next()))
+				return true;
 		}
 		return false;
 	}

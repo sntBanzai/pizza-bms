@@ -1,8 +1,8 @@
 package pl.malyszko.jerzy.pizzabms.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 /**
  * @author Jerzy Mayszko
@@ -10,6 +10,9 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 public class WishItem extends AbstractEntity {
+
+	@OneToOne
+	private Pizza pizza;
 
 	public WishItem(Wish wish, WishType wishType) {
 		super();
@@ -42,6 +45,24 @@ public class WishItem extends AbstractEntity {
 
 	public void setWish(Wish wish) {
 		this.wish = wish;
+	}
+
+	public Pizza getPizza() {
+		return pizza;
+	}
+
+	public void setPizza(Pizza pizza) {
+		this.pizza = pizza;
+	}
+
+	public Pizza removeFromCompletion() {
+		if (pizza != null) {
+			pizza.removeItem(this);
+			Pizza toRemove = pizza;
+			pizza = null;
+			return toRemove;
+		}
+		return null;
 	}
 
 }

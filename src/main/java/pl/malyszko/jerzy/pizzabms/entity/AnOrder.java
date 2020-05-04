@@ -3,6 +3,7 @@ package pl.malyszko.jerzy.pizzabms.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
@@ -16,6 +17,9 @@ import pl.malyszko.jerzy.pizzabms.json.OrdeDTOrJsonSerializer;
  */
 @Entity
 public class AnOrder extends AbstractEntity {
+
+	@Column(nullable = false)
+	private Boolean completed = Boolean.FALSE;
 
 	@OneToMany
 	private List<Pizza> orderCompletions = new ArrayList<>();

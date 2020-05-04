@@ -10,5 +10,9 @@ import pl.malyszko.jerzy.pizzabms.entity.Wish;
 public interface WishService {
 
 	Wish makeAWish(WishDTO aWish);
+
+	WishDTO deleteExistingWish(String nick);
 	
+	WishDTO getCurrentWish(String eater);
+
 }

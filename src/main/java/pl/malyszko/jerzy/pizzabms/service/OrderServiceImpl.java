@@ -66,7 +66,11 @@ public class OrderServiceImpl implements OrderService {
 
 	private void giveUpStrategy(Map<String, List<WishItem>> wishDetails,
 			AnOrder currentOrder) {
-		// TODO Auto-generated method stub
+		for (Map.Entry<String, List<WishItem>> ent : wishDetails.entrySet()) {
+			Pizza pizza = new Pizza();
+			pizza.setOrder(currentOrder);
+			assignWishItemsToPizza(ent.getValue(), pizza);
+		}
 
 	}
 
@@ -151,7 +155,11 @@ public class OrderServiceImpl implements OrderService {
 
 	private void assignWishItemsToAPizza(Long id, List<WishItem> list) {
 		Optional<Pizza> foundPizza = pizzaRepo.findById(id);
-		Pizza pizza = foundPizza.orElseThrow(IllegalStateException::new);
+		assignWishItemsToPizza(list,
+				foundPizza.orElseThrow(IllegalStateException::new));
+	}
+
+	private void assignWishItemsToPizza(List<WishItem> list, Pizza pizza) {
 		list.stream().forEach(pizza::addNextItem);
 		pizzaRepo.save(pizza);
 	}

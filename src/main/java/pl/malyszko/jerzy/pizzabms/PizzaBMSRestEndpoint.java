@@ -38,6 +38,7 @@ public class PizzaBMSRestEndpoint {
 	public ResponseEntity<WishDTO> newWish(@RequestBody WishDTO aWish) {
 		try {
 			Wish wish = wishService.makeAWish(aWish);
+			orderService.distributeWish(wish);
 			return ResponseEntity.status(HttpStatus.CREATED).body(aWish);
 		} catch (Exception e) {
 			return ResponseEntity.unprocessableEntity().build();
@@ -47,8 +48,7 @@ public class PizzaBMSRestEndpoint {
 	@PutMapping(path = "wish")
 	public ResponseEntity<WishDTO> changeWish(@RequestBody WishDTO aWish) {
 		wishService.deleteExistingWish(aWish.getNick());
-		Wish wish = wishService.makeAWish(aWish);
-		return ResponseEntity.ok(aWish);
+		return newWish(aWish);
 	}
 
 	@GetMapping(path = "wish")

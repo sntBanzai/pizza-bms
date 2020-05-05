@@ -73,6 +73,8 @@ public class WishServiceImpl implements WishService {
 	public WishDTO deleteExistingWish(String nick) {
 		AnOrder order = orderService.getCurrentOrder();
 		Wish found = wishRepo.findByNickAndOrder(nick, order);
+		if (found == null)
+			return null;
 		WishDTO wishDto = WishDTO.wrap(found);
 		if (Objects.isNull(found))
 			return null;

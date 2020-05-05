@@ -106,26 +106,26 @@ public class JsonTests {
 	public void shouldSerializeAnOrder() throws IOException {
 		// given
 		OrderDTO order = new OrderDTO();
-		List<Map<String, Map<String, Integer>>> completed = order
+		List<Map<String, Map<String, Long>>> completed = order
 				.getCompleted();
-		List<Map<String, Map<String, Integer>>> notCompleted = order
+		List<Map<String, Map<String, Long>>> notCompleted = order
 				.getNotCompleted();
 
-		Map<String, Map<String, Integer>> firstPizza = new HashMap<>();
+		Map<String, Map<String, Long>> firstPizza = new HashMap<>();
 		notCompleted.add(firstPizza);
-		firstPizza.put(CARBONARA, new HashMap<String, Integer>());
-		firstPizza.get(CARBONARA).put(OLO_ZIOM, 4);
+		firstPizza.put(CARBONARA, new HashMap<String, Long>());
+		firstPizza.get(CARBONARA).put(OLO_ZIOM, 4L);
 
-		Map<String, Map<String, Integer>> secondPizza = new HashMap<>();
+		Map<String, Map<String, Long>> secondPizza = new HashMap<>();
 		notCompleted.add(secondPizza);
-		secondPizza.put(CARBONARA, new HashMap<String, Integer>());
-		secondPizza.get(CARBONARA).put(KAKTUS, 2);
+		secondPizza.put(CARBONARA, new HashMap<String, Long>());
+		secondPizza.get(CARBONARA).put(KAKTUS, 2L);
 
-		Map<String, Map<String, Integer>> thirdPizza = new HashMap<>();
+		Map<String, Map<String, Long>> thirdPizza = new HashMap<>();
 		completed.add(thirdPizza);
-		thirdPizza.put(VEGETARIAN, new HashMap<String, Integer>());
-		thirdPizza.get(VEGETARIAN).put(OLO_ZIOM, 5);
-		thirdPizza.get(VEGETARIAN).put(CODER, 3);
+		thirdPizza.put(VEGETARIAN, new HashMap<String, Long>());
+		thirdPizza.get(VEGETARIAN).put(OLO_ZIOM, 5L);
+		thirdPizza.get(VEGETARIAN).put(CODER, 3L);
 
 		// when
 		ObjectMapper om = new ObjectMapper();

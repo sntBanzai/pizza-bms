@@ -1,5 +1,7 @@
 package pl.malyszko.jerzy.pizzabms;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pl.malyszko.jerzy.pizzabms.dto.OrderDTO;
 import pl.malyszko.jerzy.pizzabms.dto.WishDTO;
+import pl.malyszko.jerzy.pizzabms.entity.AnOrder;
 import pl.malyszko.jerzy.pizzabms.entity.Wish;
 import pl.malyszko.jerzy.pizzabms.service.OrderService;
 import pl.malyszko.jerzy.pizzabms.service.WishService;
@@ -47,22 +51,36 @@ public class PizzaBMSRestEndpoint {
 		return ResponseEntity.ok(aWish);
 	}
 
-	@GetMapping(path = "wish/{eater}")
+	@GetMapping(path = "wish")
 	public ResponseEntity<WishDTO> readWish(
 			@RequestParam("eater") String eater) {
 		WishDTO currWish = wishService.getCurrentWish(eater);
-		if(currWish == null)
+		if (currWish == null)
 			return ResponseEntity.notFound().build();
 		return ResponseEntity.ok(currWish);
 	}
 
-	@DeleteMapping(path = "wish/{eater}")
+	@DeleteMapping(path = "wish")
 	public ResponseEntity<WishDTO> deleteWish(
 			@RequestParam("eater") String eater) {
 		WishDTO wishDTO = wishService.deleteExistingWish(eater);
 		if (wishDTO == null)
 			return ResponseEntity.notFound().build();
 		return ResponseEntity.ok(wishDTO);
+	}
+
+	@GetMapping(path = "order")
+	public ResponseEntity<OrderDTO> getCurrentOrder() {
+		AnOrder currentOrder = orderService.getCurrentOrder();
+		if (currentOrder == null)
+			return ResponseEntity.notFound().build();
+		OrderDTO dto = OrderDTO.wrap(currentOrder);
+		return ResponseEntity.ok(dto);
+	}
+
+	@GetMapping(path = "orders")
+	public ResponseEntity<List<OrderDTO>> getOrders() {
+		return ResponseEntity.ok(orderService.listOrders());
 	}
 
 }

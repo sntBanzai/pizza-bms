@@ -36,18 +36,18 @@ public class OrdeDTOrJsonSerializer extends JsonSerializer<OrderDTO> {
 	}
 
 	private void writeItDown(
-			List<Map<String, Map<String, Integer>>> partitioned,
+			List<Map<String, Map<String, Long>>> partitioned,
 			Boolean completedMark, JsonGenerator gen) throws IOException {
 		if (!partitioned.isEmpty()) {
 			gen.writeStartObject();
 			gen.writeArrayFieldStart("pizzas");
-			for (Map<String, Map<String, Integer>> pizza : partitioned) {
-				for (Map.Entry<String, Map<String, Integer>> ent : pizza
+			for (Map<String, Map<String, Long>> pizza : partitioned) {
+				for (Map.Entry<String, Map<String, Long>> ent : pizza
 						.entrySet()) {
 					gen.writeStartObject();
 					gen.writeStringField("pizza", ent.getKey());
 					gen.writeArrayFieldStart("details");
-					for (Map.Entry<String, Integer> ent2 : ent.getValue()
+					for (Map.Entry<String, Long> ent2 : ent.getValue()
 							.entrySet()) {
 						gen.writeStartObject();
 						gen.writeStringField("eater", ent2.getKey());

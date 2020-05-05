@@ -20,6 +20,9 @@ public class AnOrder extends AbstractEntity {
 
 	@Column(nullable = false)
 	private Boolean completed = Boolean.FALSE;
+	
+	@OneToMany
+	private List<Wish> wishes = new ArrayList<>();
 
 	@OneToMany
 	private List<Pizza> orderCompletions = new ArrayList<>();
@@ -31,5 +34,23 @@ public class AnOrder extends AbstractEntity {
 	public void setOrderCompletions(List<Pizza> orderCompletions) {
 		this.orderCompletions = orderCompletions;
 	}
+
+	public Boolean getCompleted() {
+		return completed;
+	}
+
+	public void setCompleted(Boolean completed) {
+		this.completed = completed;
+	}
+
+	public List<Wish> getWishes() {
+		return wishes;
+	}
+
+	public void setWishes(List<Wish> wishes) {
+		this.wishes = wishes;
+	}
+	
+	
 
 }

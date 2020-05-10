@@ -31,9 +31,6 @@ import pl.malyszko.jerzy.pizzabms.entity.WishItem;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-	private static final Long PIZZA_SIZE = 8L;
-	private static final Long HALF_PIZZA_SIZE = PIZZA_SIZE / 2L;
-
 	@Autowired
 	private AnOrderRepository orderRepo;
 

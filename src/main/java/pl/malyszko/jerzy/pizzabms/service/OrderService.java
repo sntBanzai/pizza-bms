@@ -12,6 +12,9 @@ import pl.malyszko.jerzy.pizzabms.entity.Wish;
  */
 public interface OrderService {
 
+	public static final Long PIZZA_SIZE = 8L;
+	public static final Long HALF_PIZZA_SIZE = PIZZA_SIZE / 2L;
+	
 	AnOrder getCurrentOrder();
 	
 	void distributeWish(Wish wish);

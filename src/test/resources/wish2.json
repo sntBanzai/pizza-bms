@@ -1,0 +1,13 @@
+{
+  "eater": "Zenobiusz",
+  "wishes": [
+    {
+      "pizza": "carbonara",
+      "pieces": 4
+    },
+    {
+      "pizza": "vegetarian",
+      "pieces": 6
+    }
+  ]
+}

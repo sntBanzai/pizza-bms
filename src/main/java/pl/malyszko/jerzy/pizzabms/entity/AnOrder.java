@@ -5,11 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import pl.malyszko.jerzy.pizzabms.json.OrdeDTOrJsonSerializer;
 
 /**
  * @author Jerzy Mayszko
@@ -21,10 +18,10 @@ public class AnOrder extends AbstractEntity {
 	@Column(nullable = false)
 	private Boolean completed = Boolean.FALSE;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "order")
 	private List<Wish> wishes = new ArrayList<>();
 
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
 	private List<Pizza> orderCompletions = new ArrayList<>();
 
 	public List<Pizza> getOrderCompletions() {

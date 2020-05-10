@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import pl.malyszko.jerzy.pizzabms.entity.AnOrder;
+import pl.malyszko.jerzy.pizzabms.entity.Pizza;
 import pl.malyszko.jerzy.pizzabms.json.OrdeDTOrJsonSerializer;
 
 /**
@@ -31,8 +32,9 @@ public class OrderDTO {
 
 	public static OrderDTO wrap(AnOrder order) {
 		OrderDTO retVal = new OrderDTO();
-		Map<Boolean, Map<Long, Map<String, Map<String, Long>>>> collect = order
-				.getOrderCompletions().stream()
+		List<Pizza> orderCompletions = order
+				.getOrderCompletions();
+		Map<Boolean, Map<Long, Map<String, Map<String, Long>>>> collect = orderCompletions.stream()
 				.flatMap(pizza -> pizza.getItems().stream())
 				.filter(Objects::nonNull)
 				.collect(Collectors.partitioningBy(

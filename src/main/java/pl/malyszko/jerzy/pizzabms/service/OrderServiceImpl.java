@@ -1,11 +1,13 @@
 package pl.malyszko.jerzy.pizzabms.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,13 @@ public class OrderServiceImpl implements OrderService {
 		approxMatchStrategy(wishDetails, theUnfinishedPizzas, wishDetailsTypes);
 		giveUpStrategy(wishDetails, currentOrder);
 
+		boolean orderCompleted = currentOrder.getOrderCompletions().stream()
+				.allMatch(Pizza::isCompleted);
+		if (orderCompleted) {
+			currentOrder.setCompleted(orderCompleted);
+			orderRepo.save(currentOrder);
+		}
+
 	}
 
 	private void giveUpStrategy(Map<String, List<WishItem>> wishDetails,
@@ -69,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
 		for (Map.Entry<String, List<WishItem>> ent : wishDetails.entrySet()) {
 			Pizza pizza = new Pizza();
 			pizza.setOrder(currentOrder);
+			currentOrder.getOrderCompletions().add(pizza);
 			assignWishItemsToPizza(ent.getValue(), pizza);
 		}
 
@@ -106,7 +116,8 @@ public class OrderServiceImpl implements OrderService {
 			List<String> wishDetailsTypes) {
 		ListIterator<String> wishDetailsIterator = wishDetailsTypes
 				.listIterator();
-		for (Map.Entry<Long, Map<String, Long>> ent : theUnfinishedPizzas
+		Set<Long> finishedPizzas = new HashSet<>();
+		pizzaFinished: for (Map.Entry<Long, Map<String, Long>> ent : theUnfinishedPizzas
 				.entrySet()) {
 			ListIterator<String> pizzaItemsIterator = new ArrayList<>(
 					ent.getValue().keySet()).listIterator();
@@ -131,13 +142,16 @@ public class OrderServiceImpl implements OrderService {
 							assignWishItemsToAPizza(ent.getKey(),
 									wishDetails.get(typeName));
 							wishDetailsIterator.remove();
-							pizzaItemsIterator.remove();
+							wishDetails.remove(typeName);
+							finishedPizzas.add(ent.getKey());
+							continue pizzaFinished;
 						}
 					} else if (Objects.equals(HALF_PIZZA_SIZE, piecesSum)
 							&& isSameTypePizza) {
 						assignWishItemsToAPizza(ent.getKey(),
 								wishDetails.get(typeName));
 						wishDetailsIterator.remove();
+						wishDetails.remove(typeName);
 						ent.getValue().put(typeName, piecesSum);
 					} else if (wishTypeSize > HALF_PIZZA_SIZE && Objects
 							.equals(HALF_PIZZA_SIZE, completionPizzaSize)) {

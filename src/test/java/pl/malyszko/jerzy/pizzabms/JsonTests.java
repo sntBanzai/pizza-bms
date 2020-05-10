@@ -5,20 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
@@ -30,6 +31,7 @@ import pl.malyszko.jerzy.pizzabms.dto.WishDTO;
  * @author Jerzy Mayszko
  *
  */
+@RunWith(SpringRunner.class)
 public class JsonTests {
 
 	private static final String VEGETARIAN = "vegetarian";
@@ -42,25 +44,13 @@ public class JsonTests {
 
 	private static final String OLO_ZIOM = "Olo-ziom";
 
-	static String wishJson = "{\"eater\": \"Olo-ziom\",\"wishes\": [{\"pizza\": \"carbonara\",  \"pieces\": 4},"
-			+ "{\"pizza\": \"vegetarian\",\"pieces\": 2}]}";
-
-	String orderJson = "{\"order-lines\":[{\"pizzas\":[{"
-			+ "\"pizza\":\"carbonara\",\"details\":[{"
-			+ "\"eater\":\"Olo-ziom\",\"pieces\":4}]},"
-			+ "{\"pizza\":\"carbonara\",\"details\":[{"
-			+ "\"eater\":\"coder\",\"pieces\":2},{"
-			+ "\"eater\":\"kaktus\",\"pieces\":1}]}],\"completed\":false"
-			+ "},{\"pizzas\":[{" + "\"pizza\":\"vegetarian\",\"details\":[{"
-			+ "\"eater\":\"Olo-ziom\",\"pieces\":5},{"
-			+ "\"eater\":\"coder\",\"pieces\":3}]}],\"completed\":true}]}";
-
 	@Test
-	public void shouldDeserializelWish()
-			throws JsonMappingException, JsonProcessingException {
+	public void shouldDeserializelWish() throws IOException {
 		// when
-		WishDTO valueRead = new ObjectMapper().readValue(wishJson,
-				WishDTO.class);
+		List<String> jsonLines = Files.readAllLines(
+				Paths.get("src", "test", "resources", "wish.json"));
+		WishDTO valueRead = new ObjectMapper().readValue(
+				jsonLines.stream().reduce("", String::concat), WishDTO.class);
 
 		// then
 		assertNotNull(valueRead);
@@ -106,8 +96,7 @@ public class JsonTests {
 	public void shouldSerializeAnOrder() throws IOException {
 		// given
 		OrderDTO order = new OrderDTO();
-		List<Map<String, Map<String, Long>>> completed = order
-				.getCompleted();
+		List<Map<String, Map<String, Long>>> completed = order.getCompleted();
 		List<Map<String, Map<String, Long>>> notCompleted = order
 				.getNotCompleted();
 
@@ -133,7 +122,7 @@ public class JsonTests {
 				.writeValueAsString(order);
 
 		// then
-		System.out.println(jsonSerialized);
+		// System.out.println(jsonSerialized);
 		JsonParser parser = new JsonFactory().createParser(jsonSerialized);
 		JsonNode node = new ObjectMapper().readTree(parser);
 		JsonNode jsonNode = node.get("order-lines");
@@ -149,10 +138,6 @@ public class JsonTests {
 			assertEquals(JsonNodeType.ARRAY, jsonNode3.getNodeType());
 		}
 
-	}
-
-	public static void main(String... strings) {
-		System.out.println(wishJson);
 	}
 
 }

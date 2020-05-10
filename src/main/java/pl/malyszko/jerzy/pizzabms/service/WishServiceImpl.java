@@ -51,6 +51,7 @@ public class WishServiceImpl implements WishService {
 		aWish.setNick(dto.getNick());
 		AnOrder currentOrder = orderService.getCurrentOrder();
 		aWish.setOrder(currentOrder);
+		currentOrder.getWishes().add(aWish);
 		wishRepo.save(aWish);
 		for (Map.Entry<String, Integer> ent : dto.getPizzaPieces().entrySet()) {
 			String typeName = ent.getKey();

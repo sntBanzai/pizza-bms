@@ -1,6 +1,7 @@
 package pl.malyszko.jerzy.pizzabms.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -26,9 +27,11 @@ public class WishItem extends AbstractEntity {
 	}
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "wishTypeId")
 	private WishType wishType;
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "wishId")
 	private Wish wish;
 
 	public WishType getWishType() {

@@ -1,0 +1,13 @@
+{
+  "eater": "Olo-ziom",
+  "wishes": [
+    {
+      "pizza": "carbonara",
+      "pieces": 4
+    },
+    {
+      "pizza": "vegetarian",
+      "pieces": 2
+    }
+  ]
+}

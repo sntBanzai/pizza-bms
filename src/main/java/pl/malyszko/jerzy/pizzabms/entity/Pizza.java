@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -24,6 +25,7 @@ public class Pizza extends AbstractEntity implements Iterable<WishItem> {
 	}
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "orderId")
 	private AnOrder order;
 
 	@OneToOne
@@ -141,6 +143,7 @@ public class Pizza extends AbstractEntity implements Iterable<WishItem> {
 					Object object = field.get(this);
 					if (object == null) {
 						field.set(this, wi);
+						wi.setPizza(this);
 						return true;
 
 					}
